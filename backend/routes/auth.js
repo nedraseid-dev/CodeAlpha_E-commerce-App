@@ -2,7 +2,7 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const pool = require("../config/db");
-require("dotenv").config();
+const authMiddleware = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -27,9 +27,7 @@ router.post("/register", async (req, res) => {
     );
 
     const user = result.rows[0];
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || "dev_secret", {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
     res.status(201).json({ token, user });
   } catch (err) {
@@ -59,14 +57,35 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || "dev_secret", {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
     res.json({ token, user: { id: user.id, name: user.name, email: user.email } });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Something went wrong during login" });
+  }
+});
+
+// PATCH /api/auth/profile — update name (and optionally phone if column exists)
+router.patch("/profile", authMiddleware, async (req, res) => {
+  const { name } = req.body;
+
+  if (!name) {
+    return res.status(400).json({ error: "Name is required" });
+  }
+
+  try {
+    const result = await pool.query(
+      "UPDATE users SET name = $1 WHERE id = $2 RETURNING id, name, email",
+      [name, req.userId]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Could not update profile" });
   }
 });
 
