@@ -19,8 +19,8 @@ export default function Cart() {
     <div className="container" style={{ marginTop: 32, maxWidth: 640 }}>
       <h2>Your cart</h2>
       {items.map(({ product, quantity }) => (
-        <div className="cart-row" key={product._id}>
-          <img src={product.image} alt={product.name} />
+        <div className="cart-row" key={product.id}>
+          <img src={product.image_url} alt={product.name} />
           <div>
             <div>{product.name}</div>
             <div style={{ color: "#8a8a80", fontSize: "0.9rem" }}>
@@ -32,9 +32,9 @@ export default function Cart() {
             min={1}
             className="qty-input"
             value={quantity}
-            onChange={(e) => updateQuantity(product._id, Number(e.target.value))}
+            onChange={(e) => updateQuantity(product.id, Number(e.target.value))}
           />
-          <button className="btn btn-outline" onClick={() => removeItem(product._id)}>
+          <button className="btn btn-outline" onClick={() => removeItem(product.id)}>
             Remove
           </button>
         </div>

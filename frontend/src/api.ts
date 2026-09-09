@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { AuthResponse, Order, Product, User } from "../types";
+import type { AuthResponse, Order, Product, User } from "./types";
 
 const api = axios.create({
   baseURL: "/api",
@@ -33,9 +33,9 @@ export const profileApi = {
 };
 
 export const ordersApi = {
-  create: (items: { productId: string; quantity: number }[]) =>
-    api.post<Order>("/orders", { items }).then((r) => r.data),
-  getMine: () => api.get<Order[]>("/orders/mine").then((r) => r.data),
+  create: () =>
+    api.post<Order>("/orders").then((r) => r.data),
+  getMine: () => api.get<Order[]>("/orders").then((r) => r.data),
 };
 
 export default api;

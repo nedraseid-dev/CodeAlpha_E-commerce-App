@@ -1,9 +1,9 @@
 export interface Product {
-  _id: string;
+  id: string;
   name: string;
   description: string;
   price: number;
-  image: string;
+  image_url: string;
   category: string;
   stock: number;
 }
@@ -14,7 +14,7 @@ export interface CartItem {
 }
 
 export interface User {
-  _id: string;
+  id: string;
   name: string;
   email: string;
   phone?: string;
@@ -26,9 +26,9 @@ export interface AuthResponse {
 }
 
 export interface Order {
-  _id: string;
+  id: string;
   items: CartItem[];
   total: number;
   status: "pending" | "paid" | "shipped" | "delivered";
-  createdAt: string;
+  created_at: string;
 }

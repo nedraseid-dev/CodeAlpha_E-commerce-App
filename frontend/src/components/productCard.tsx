@@ -7,11 +7,11 @@ export default function ProductCard({ product }: { product: Product }) {
 
   return (
     <div className="product-card">
-      <Link to={`/products/${product._id}`}>
-        <img src={product.image} alt={product.name} />
+      <Link to={`/products/${product.id}`}>
+        <img src={product.image_url} alt={product.name} />
       </Link>
       <div className="body">
-        <Link to={`/products/${product._id}`}>
+        <Link to={`/products/${product.id}`}>
           <h3>{product.name}</h3>
         </Link>
         <div className="price">${product.price.toFixed(2)}</div>
